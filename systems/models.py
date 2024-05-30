@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 
 from django_extensions.db.fields import AutoSlugField
 
+
 class HydroponicSystem(models.Model):
     name = models.CharField(max_length=70)
     description = models.TextField(blank=True)
@@ -11,6 +12,7 @@ class HydroponicSystem(models.Model):
 
     def __str__(self):
         return self.name
+
 
 class Measurement(models.Model):
     system = models.ForeignKey(HydroponicSystem, on_delete=models.CASCADE)
