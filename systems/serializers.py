@@ -4,15 +4,35 @@ from rest_framework import serializers
 from .models import HydroponicSystem, Measurement
 
 
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['email', 'username', 'password']
+
+    def create(self, validated_data):
+        password = validated_data.pop('password', None)
+        instance = self.Meta.model(**validated_data)
+        if password is not None:
+            instance.set_password(password)
+        instance.save()
+        return instance
+
+    def validate_email(self, value):
+        qs = User.objects.filter(email__iexact=value)
+        if qs.exists():
+            raise serializers.ValidationError(f"A user with {value} email already exists")
+        return value
+
+
 class HydroponicSystemSerializer(serializers.ModelSerializer):
     url = serializers.HyperlinkedIdentityField(
         view_name='systems:hydroponic-system-detail',
-        lookup_field = 'slug'
+        lookup_field='slug'
     )
+
     class Meta:
         model = HydroponicSystem
         fields = ['url', 'id', 'name', 'description', 'owner', 'slug']
-
 
 
 class MeasurementSerializer(serializers.ModelSerializer):
@@ -24,4 +44,3 @@ class MeasurementSerializer(serializers.ModelSerializer):
         if value.owner != self.context['request'].user:
             raise serializers.ValidationError('You can only create measurements for your own hydroponic systems')
         return value
-
