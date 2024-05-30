@@ -1,11 +1,14 @@
-from rest_framework import generics, permissions
+from django.contrib.auth.models import User
+from rest_framework import generics, permissions, filters
 from rest_framework.decorators import api_view
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 
 from .models import HydroponicSystem, Measurement
-from .serializers import HydroponicSystemSerializer, MeasurementSerializer
+from .serializers import HydroponicSystemSerializer, MeasurementSerializer, UserSerializer
 from .permissions import IsOwner, IsSystemOwner
+
 
 @api_view(['GET'])
 def api_root(request, format=None):
@@ -14,9 +17,18 @@ def api_root(request, format=None):
         'measurements': reverse('systems:measurement-list', request=request, format=format)
     })
 
+
+class UserCreate(generics.CreateAPIView):
+    serializer_class = UserSerializer
+    permission_classes = [AllowAny]
+
+
 class HydroponicSystemList(generics.ListCreateAPIView):
     serializer_class = HydroponicSystemSerializer
     permission_classes = [permissions.IsAuthenticated]
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['name', 'description']
+    ordering_fields = ['id', 'name']
 
     def get_queryset(self):
         return HydroponicSystem.objects.filter(owner=self.request.user)
@@ -38,6 +50,9 @@ class HydroponicSystemDetail(generics.RetrieveUpdateDestroyAPIView):
 class MeasurementList(generics.ListCreateAPIView):
     serializer_class = MeasurementSerializer
     permission_classes = [permissions.IsAuthenticated]
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['system__name', 'timestamp', 'temperature', 'ph', 'tds', 'timestamp']
+    ordering_fields = ['system__name', 'timestamp', 'temperature', 'ph', 'tds', 'timestamp']
 
     def get_queryset(self):
         return Measurement.objects.filter(system__owner=self.request.user)
