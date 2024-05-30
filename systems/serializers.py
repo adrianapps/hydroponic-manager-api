@@ -6,7 +6,7 @@ from .models import HydroponicSystem, Measurement
 
 class HydroponicSystemSerializer(serializers.ModelSerializer):
     url = serializers.HyperlinkedIdentityField(
-        view_name='hydroponicsystem-detail',
+        view_name='systems:hydroponic-system-detail',
         lookup_field = 'slug'
     )
     class Meta:
