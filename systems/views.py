@@ -1,13 +1,15 @@
-from django.contrib.auth.models import User
-from rest_framework import generics, permissions, filters
+from rest_framework import generics, permissions
 from rest_framework.decorators import api_view
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
+from rest_framework.filters import OrderingFilter
+from django_filters.rest_framework import DjangoFilterBackend
 
 from .models import HydroponicSystem, Measurement
 from .serializers import HydroponicSystemSerializer, MeasurementSerializer, UserSerializer
 from .permissions import IsOwner, IsSystemOwner
+from .filters import MeasurementFilter, HydroponicSystemFilter
 
 
 @api_view(['GET'])
@@ -26,9 +28,9 @@ class UserCreate(generics.CreateAPIView):
 class HydroponicSystemList(generics.ListCreateAPIView):
     serializer_class = HydroponicSystemSerializer
     permission_classes = [permissions.IsAuthenticated]
-    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
-    search_fields = ['name', 'description']
-    ordering_fields = ['id', 'name']
+    filter_backends = [DjangoFilterBackend, OrderingFilter]
+    filterset_class = HydroponicSystemFilter
+    ordering_fields = ['name', 'owner', 'slug']
 
     def get_queryset(self):
         return HydroponicSystem.objects.filter(owner=self.request.user)
@@ -50,9 +52,9 @@ class HydroponicSystemDetail(generics.RetrieveUpdateDestroyAPIView):
 class MeasurementList(generics.ListCreateAPIView):
     serializer_class = MeasurementSerializer
     permission_classes = [permissions.IsAuthenticated]
-    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
-    search_fields = ['system__name', 'timestamp', 'temperature', 'ph', 'tds', 'timestamp']
-    ordering_fields = ['system__name', 'timestamp', 'temperature', 'ph', 'tds', 'timestamp']
+    filter_backends = [DjangoFilterBackend, OrderingFilter]
+    filterset_class = MeasurementFilter
+    ordering_fields = ['timestamp', 'temperature', 'ph', 'tds']
 
     def get_queryset(self):
         return Measurement.objects.filter(system__owner=self.request.user)
