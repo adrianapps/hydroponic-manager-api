@@ -7,7 +7,12 @@ from rest_framework.filters import OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 
 from .models import HydroponicSystem, Measurement
-from .serializers import HydroponicSystemSerializer, MeasurementSerializer, UserSerializer
+from .serializers import (
+    HydroponicSystemSerializer,
+    MeasurementSerializer,
+    UserSerializer,
+    HydroponicSystemDetailSerializer
+)
 from .permissions import IsOwner, IsSystemOwner
 from .filters import MeasurementFilter, HydroponicSystemFilter
 
@@ -44,7 +49,7 @@ class HydroponicSystemList(generics.ListCreateAPIView):
 
 class HydroponicSystemDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = HydroponicSystem
-    serializer_class = HydroponicSystemSerializer
+    serializer_class = HydroponicSystemDetailSerializer
     permission_classes = [permissions.IsAuthenticated, IsOwner]
     lookup_field = 'slug'
 
