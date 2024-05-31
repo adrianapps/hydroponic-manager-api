@@ -36,9 +36,18 @@ class HydroponicSystemSerializer(serializers.ModelSerializer):
 
 
 class MeasurementSerializer(serializers.ModelSerializer):
+    url = serializers.HyperlinkedIdentityField(
+        view_name='systems:measurement-detail',
+    )
+    system = serializers.HyperlinkedRelatedField(
+        view_name='systems:hydroponic-system-detail',
+        lookup_field='slug',
+        queryset=HydroponicSystem.objects.all()
+    )
+
     class Meta:
         model = Measurement
-        fields = ['id', 'system', 'temperature', 'ph', 'tds', 'description', 'timestamp']
+        fields = ['url', 'id', 'system', 'temperature', 'ph', 'tds', 'description', 'timestamp']
 
     def validate_system(self, value):
         if value.owner != self.context['request'].user:
