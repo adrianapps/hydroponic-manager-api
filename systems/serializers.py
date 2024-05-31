@@ -35,6 +35,29 @@ class HydroponicSystemSerializer(serializers.ModelSerializer):
         fields = ['url', 'id', 'name', 'description', 'owner', 'slug']
 
 
+class HydroponicSystemDetailSerializer(serializers.ModelSerializer):
+    last_measurements = serializers.SerializerMethodField()
+
+    class Meta:
+        model = HydroponicSystem
+        fields = ['id', 'name', 'description', 'owner', 'slug', 'last_measurements']
+
+    def get_last_measurements(self, obj):
+        measurements = Measurement.objects.filter(system=obj).order_by('-timestamp')[:10]
+        request = self.context.get('request')
+        return LastMeasurementsSerializer(measurements, many=True, context={'request': request}).data
+
+
+class LastMeasurementsSerializer(serializers.ModelSerializer):
+    url = serializers.HyperlinkedIdentityField(
+        view_name='systems:measurement-detail',
+    )
+
+    class Meta:
+        model = Measurement
+        fields = ['url', 'id', 'temperature', 'ph', 'tds', 'description', 'timestamp']
+
+
 class MeasurementSerializer(serializers.ModelSerializer):
     url = serializers.HyperlinkedIdentityField(
         view_name='systems:measurement-detail',
@@ -48,6 +71,12 @@ class MeasurementSerializer(serializers.ModelSerializer):
     class Meta:
         model = Measurement
         fields = ['url', 'id', 'system', 'temperature', 'ph', 'tds', 'description', 'timestamp']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        request = self.context.get('request')
+        if request and hasattr(request, 'user'):
+            self.fields['system'].queryset = HydroponicSystem.objects.filter(owner=request.user)
 
     def validate_system(self, value):
         if value.owner != self.context['request'].user:
