@@ -5,6 +5,7 @@ Simple API built with Django and DRF for managing hydroponic systems.
 1. [How to Run the Application](#how-to-run-the-application)
 2. [Directories](#directories)
 3. [Endpoints](#endpoints)
+4. [Documentation](#documentation)
 
 ## How to Run the Application
 
@@ -65,6 +66,7 @@ Simple API built with Django and DRF for managing hydroponic systems.
 - **`hydroponic-systems/<slug:slug>/`**:
     - **GET**: Details of user's hydroponic system.
     - **PUT**: Update your hydroponic system.
+    - **PATCH**: Partially update your hydroponic system
     - **DELETE**: Delete your hydroponic system.
 
 - **`measurements/`**:
@@ -74,6 +76,7 @@ Simple API built with Django and DRF for managing hydroponic systems.
 - **`measurements/<int:pk>/`**:
     - **GET**: Details of user's measurement.
     - **PUT**: Update your measurement.
+    - **PATCH**: Partially update your measurement.
     - **DELETE**: Delete your measurement.
 
 ### Other Endpoints
@@ -82,3 +85,8 @@ Simple API built with Django and DRF for managing hydroponic systems.
     - Django Admin Interface.
 - `/api-auth/`:
     - DRF Authentication Interface.
+
+## Documentation
+You can access swagger and redoc documentation in following endpoints:
+- **`/swagger/`**
+- **`/redoc/`**
