@@ -87,6 +87,6 @@ Simple API built with Django and DRF for managing hydroponic systems.
     - DRF Authentication Interface.
 
 ## Documentation
-You can access swagger and redoc documentation in following endpoints:
+You can access swagger and redoc documentation at the following endpoints:
 - **`/swagger/`**
 - **`/redoc/`**
