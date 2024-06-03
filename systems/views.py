@@ -1,3 +1,4 @@
+from django.db.models import Prefetch
 from rest_framework import generics, permissions
 from rest_framework.decorators import api_view
 from rest_framework.permissions import AllowAny
@@ -56,7 +57,7 @@ class HydroponicSystemList(generics.ListCreateAPIView):
 
         :return: QuerySet of HydroponicSystem objects
         """
-        return HydroponicSystem.objects.filter(owner=self.request.user)
+        return HydroponicSystem.objects.filter(owner=self.request.user).select_related('owner')
 
     def perform_create(self, serializer):
         """
@@ -74,7 +75,12 @@ class HydroponicSystemDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     View for retrieving, updating, and deleting specific hydroponic systems.
     """
-    queryset = HydroponicSystem
+    queryset = HydroponicSystem.objects.prefetch_related(
+        Prefetch(
+            'measurements',
+            queryset=Measurement.objects.order_by('-timestamp')[:10],
+            to_attr='last_measurements_prefetched'
+    )).select_related('owner')
     serializer_class = HydroponicSystemDetailSerializer
     permission_classes = [permissions.IsAuthenticated, IsOwner]
     lookup_field = 'slug'
@@ -96,13 +102,13 @@ class MeasurementList(generics.ListCreateAPIView):
 
         :return: QuerySet of Measurement objects
         """
-        return Measurement.objects.filter(system__owner=self.request.user)
+        return Measurement.objects.filter(system__owner=self.request.user).select_related('system')
 
 
 class MeasurementDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     View for retrieving, updating, and deleting specific measurements.
     """
-    queryset = Measurement
+    queryset = Measurement.objects.select_related('system')
     serializer_class = MeasurementSerializer
     permission_classes = [permissions.IsAuthenticated, IsSystemOwner]

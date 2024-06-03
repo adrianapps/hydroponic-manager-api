@@ -8,6 +8,7 @@ class UserSerializer(serializers.ModelSerializer):
     """
     Serializer for the User model.
     """
+
     class Meta:
         model = User
         fields = ['email', 'username', 'password']
@@ -76,7 +77,7 @@ class HydroponicSystemDetailSerializer(serializers.ModelSerializer):
         Returns:
            list: Serialized last measurements.
         """
-        measurements = Measurement.objects.filter(system=obj).order_by('-timestamp')[:10]
+        measurements = obj.last_measurements_prefetched
         request = self.context.get('request')
         return LastMeasurementsSerializer(measurements, many=True, context={'request': request}).data
 
