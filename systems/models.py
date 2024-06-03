@@ -7,7 +7,7 @@ from django_extensions.db.fields import AutoSlugField
 class HydroponicSystem(models.Model):
     name = models.CharField(max_length=70)
     description = models.TextField(blank=True)
-    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='hydroponic_systems')
     slug = AutoSlugField(populate_from='name', overwrite=True, unique=True)
 
     def __str__(self):
@@ -15,7 +15,7 @@ class HydroponicSystem(models.Model):
 
 
 class Measurement(models.Model):
-    system = models.ForeignKey(HydroponicSystem, on_delete=models.CASCADE)
+    system = models.ForeignKey(HydroponicSystem, on_delete=models.CASCADE, related_name='measurements')
     temperature = models.FloatField()
     ph = models.FloatField()
     tds = models.FloatField()
