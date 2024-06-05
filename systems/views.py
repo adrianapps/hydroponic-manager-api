@@ -14,7 +14,7 @@ from .serializers import (
     UserSerializer,
     HydroponicSystemDetailSerializer
 )
-from .permissions import IsOwner, IsSystemOwner
+from .permissions import IsHydroponicSystemOwner, IsMeasurementOwner
 from .filters import MeasurementFilter, HydroponicSystemFilter
 
 
@@ -82,7 +82,7 @@ class HydroponicSystemDetail(generics.RetrieveUpdateDestroyAPIView):
             to_attr='last_measurements_prefetched'
     )).select_related('owner')
     serializer_class = HydroponicSystemDetailSerializer
-    permission_classes = [permissions.IsAuthenticated, IsOwner]
+    permission_classes = [permissions.IsAuthenticated, IsHydroponicSystemOwner]
     lookup_field = 'slug'
 
 
@@ -111,4 +111,4 @@ class MeasurementDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     queryset = Measurement.objects.select_related('system')
     serializer_class = MeasurementSerializer
-    permission_classes = [permissions.IsAuthenticated, IsSystemOwner]
+    permission_classes = [permissions.IsAuthenticated, IsMeasurementOwner]
