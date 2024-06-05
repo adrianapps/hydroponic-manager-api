@@ -1,5 +1,5 @@
 #!/bin/bash
-ECHO "Create migrations"
+echo "Create migrations"
 python manage.py makemigrations systems
 echo "=================================="
 
