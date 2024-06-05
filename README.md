@@ -3,11 +3,27 @@ Simple API built with Django and DRF for managing hydroponic systems.
 
 ## Table of Contents
 1. [How to Run the Application](#how-to-run-the-application)
+    - [Running with Docker](#running-with-docker)
+    - [Running without Docker](#running-without-docker)
 2. [Directories](#directories)
 3. [Endpoints](#endpoints)
 4. [Documentation](#documentation)
 
 ## How to Run the Application
+
+### Running with Docker
+
+1. **Build the Docker image**:
+    ```bash
+    docker-compose build
+    ```
+
+2. **Run the Docker container**:
+    ```bash
+    docker-compose up
+    ```
+
+### Running without Docker
 
 1. **Create a virtual environment and install dependencies**:
     ```bash
