@@ -20,7 +20,7 @@ class Measurement(models.Model):
     ph = models.FloatField()
     tds = models.FloatField()
     description = models.TextField(blank=True)
-    timestamp = models.DateTimeField(auto_now_add=True)
+    timestamp = models.DateTimeField(auto_now_add=True, db_index=True)
 
     def __str__(self):
         return f"{self.system.name} measurement at {self.timestamp}"
