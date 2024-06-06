@@ -65,10 +65,7 @@ class HydroponicSystemList(generics.ListCreateAPIView):
 
         :param serializer: Serializer instance
         """
-        if serializer.is_valid():
-            serializer.save(owner=self.request.user)
-        else:
-            print(serializer.errors)
+        serializer.save(owner=self.request.user)
 
 
 class HydroponicSystemDetail(generics.RetrieveUpdateDestroyAPIView):
