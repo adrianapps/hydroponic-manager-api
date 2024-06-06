@@ -29,7 +29,9 @@ def api_root(request, format=None):
     return Response({
         'register': reverse('systems:user-create', request=request, format=format),
         'hydroponic-systems': reverse('systems:hydroponic-system-list', request=request, format=format),
-        'measurements': reverse('systems:measurement-list', request=request, format=format)
+        'measurements': reverse('systems:measurement-list', request=request, format=format),
+        'swagger': reverse('schema-swagger-ui', request=request),
+        'redoc': reverse('schema-redoc', request=request),
     })
 
 
