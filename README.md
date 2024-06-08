@@ -42,6 +42,7 @@ Simple API built with Django and DRF for managing hydroponic systems.
     CREATE DATABASE your_db_name;
     CREATE USER your_user WITH PASSWORD 'your_password';
     GRANT ALL PRIVILEGES ON DATABASE your_db_name TO your_user;
+    ALTER ROLE your_user CREATEDB;
     ```
 
 4. **Create a `.env` file with PostgreSQL settings**:
