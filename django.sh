@@ -1,8 +1,4 @@
 #!/bin/bash
-echo "Create migrations"
-python manage.py makemigrations systems
-echo "=================================="
-
 echo "Migrate"
 python manage.py migrate
 echo "=================================="
